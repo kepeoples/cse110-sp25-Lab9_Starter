@@ -1,26 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lab 9</title>
-
   <style>
     button {
       margin: 3px;
     }
-
     button:hover {
       cursor: pointer;
     }
-
-    #first-num,
-    #second-num {
+    #first-num, #second-num {
       width: 60px;
     }
-
     output {
       border: 1px solid gray;
       display: block;
@@ -29,11 +23,9 @@
       padding: 5px;
       width: 240px;
     }
-
     main {
       width: 800px;
     }
-
     #error-btns {
       column-gap: 5px;
       display: flex;
@@ -41,14 +33,12 @@
       margin-top: 30px;
       row-gap: 5px;
     }
-
     #error-btns>* {
       padding: 8px 2px;
       width: 122px;
     }
   </style>
 </head>
-
 <body>
   <main>
     <form>
@@ -69,25 +59,27 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="log">Console Log</button>
+      <button id="error">Console Error</button>
+      <button id="count">Console Count</button>
+      <button id="warn">Console Warn</button>
+      <button id="assert">Console Assert</button>
+      <button id="clear">Console Clear</button>
+      <button id="dir">Console Dir</button>
+      <button id="dirxml">Console dirxml</button>
+      <button id="group">Console Group Start</button>
+      <button id="groupEnd">Console Group End</button>
+      <button id="table">Console Table</button>
+      <button id="time">Start Timer</button>
+      <button id="timeEnd">End Timer</button>
+      <button id="trace">Console Trace</button>
+      <button id="global-error">Trigger a Global Error</button>
+      <button id="custom-error">Throw Custom Error</button>
     </section>
   </main>
 
   <script>
+    // Calculator logic
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -98,11 +90,113 @@
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
     });
 
-    let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
+    // Console method demonstrations
+    console.countReset("Click Count");
 
-    // Start your code here
-    // You may move this JS to another file if you wish
+    document.getElementById("log").addEventListener("click", () => {
+      console.log("This is a console.log message.");
+    });
+
+    document.getElementById("error").addEventListener("click", () => {
+      console.error("This is a console.error message.");
+    });
+
+    document.getElementById("count").addEventListener("click", () => {
+      console.count("Click Count");
+    });
+
+    document.getElementById("warn").addEventListener("click", () => {
+      console.warn("This is a console.warn message.");
+    });
+
+    document.getElementById("assert").addEventListener("click", () => {
+      const isTrue = false;
+      console.assert(isTrue, "Assertion failed: isTrue is false");
+    });
+
+    document.getElementById("clear").addEventListener("click", () => {
+      console.clear();
+    });
+
+    document.getElementById("dir").addEventListener("click", () => {
+      console.dir(document.body);
+    });
+
+    document.getElementById("dirxml").addEventListener("click", () => {
+      console.dirxml(document);
+    });
+
+    document.getElementById("group").addEventListener("click", () => {
+      console.group("Group Start");
+      console.log("Inside the group");
+    });
+
+    document.getElementById("groupEnd").addEventListener("click", () => {
+      console.groupEnd();
+    });
+
+    document.getElementById("table").addEventListener("click", () => {
+      const obj = [
+        { name: "Alice", age: 21 },
+        { name: "Bob", age: 24 }
+      ];
+      console.table(obj);
+    });
+
+    document.getElementById("time").addEventListener("click", () => {
+      console.time("Timer");
+    });
+
+    document.getElementById("timeEnd").addEventListener("click", () => {
+      console.timeEnd("Timer");
+    });
+
+    document.getElementById("trace").addEventListener("click", () => {
+      function a() { b(); }
+      function b() { console.trace("Trace button clicked"); }
+      a();
+    });
+
+    // Step 4: Custom Error Class and Button
+    class CustomCalcError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "CustomCalcError";
+      }
+    }
+
+    document.getElementById("custom-error").addEventListener("click", () => {
+      try {
+        throw new CustomCalcError("This is a custom calculator error!");
+      } catch (err) {
+        console.error("Caught custom error:", err.name, "-", err.message);
+      }
+    });
+
+    // Step 5: Global error handler using onerror
+    window.onerror = function (message, source, lineno, colno, error) {
+      console.log("Global Error Caught via window.onerror:");
+      console.log("Message:", message);
+      console.log("Source:", source);
+      console.log("Line:", lineno);
+      console.log("Column:", colno);
+      console.log("Error object:", error);
+    };
+
+    // Step 5 Tip: Global error handler using addEventListener
+    window.addEventListener("error", function (event) {
+      console.log("Global Error Caught via event listener:");
+      console.log("Message:", event.message);
+      console.log("Filename:", event.filename);
+      console.log("Line:", event.lineno);
+      console.log("Column:", event.colno);
+      console.log("Error object:", event.error);
+    });
+
+    // Trigger a real uncaught global error
+    document.getElementById("global-error").addEventListener("click", () => {
+      nonExistentFunction(); // Uncaught error → triggers both handlers
+    });
   </script>
 </body>
-
 </html>
